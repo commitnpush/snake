@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <style>
+  </style>
+  <body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <script>
+      c = document.querySelector("#canvas");
+      ctx = c.getContext("2d");
+      px=py=0;
+      vx=1;vy=0;
+      size=20;
+      tile=20;
+      tail=10;
+      trail=[];
+      ix = 0;
+      iy = 0;
+      document.addEventListener("keydown", keyPush);
+      item();
+      setInterval(game, 1000/10);
+
+      function keyPush(event){
+        switch(event.keyCode){
+          case 37: vx=-1; vy=0; break;
+          case 38: vx=0; vy=-1; break;
+          case 39: vx=1; vy=0; break;
+          case 40: vx=0; vy=1; break;
+        }
+      }
+
+      function item(){
+        ix = Math.floor(Math.random() * tile);
+        iy = Math.floor(Math.random() * tile);
+      }
+
+      function game(){
+        px+=vx;
+        py+=vy;
+        if(px > tile-1) px = 0;
+        if(px < 0) px = tile-1;
+        if(py > tile-1) py = 0;
+        if(py < 0) py = tile-1;
+        if(px == ix && py == iy){
+          item();
+          tail++;
+        }
+        for(let i in trail){
+          if(trail[i].px == px && trail[i].py == py){
+            console.log("i:",i, "tail", tail);
+            tail = tail - i - 1;
+            console.log("tail",tail);
+            break;
+          }
+        }
+        ctx.fillStyle="black";
+        ctx.fillRect(0,0,c.width, c.height);
+        ctx.fillStyle="lime";
+        trail.push({px:px, py:py});
+        for(let point of trail){
+          ctx.fillRect(point.px*size,point.py*size, size, size);
+        }
+        ctx.fillStyle="red";
+        ctx.fillRect(ix*size,iy*size, size, size);
+        if(trail.length > tail){
+          for(let i = 0; i < trail.length - tail; i++){
+            trail.shift();
+          }
+
+        }
+      }
+
+
+    </script>
+
+
+  </body>
+</html>
